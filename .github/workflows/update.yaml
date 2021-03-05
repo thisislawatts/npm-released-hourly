@@ -2,22 +2,19 @@ name: "Update"
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - "*"
       - "!README.md"
+  schedule:
+    - cron: "0 * * * *"
+
 jobs:
   brew:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Commit to repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMIT_MSG: |
-            Updated jobs from Greenhouse
-            skip-checks: true
+      - uses: actions/checkout@master
+      - name: Commit
         run: |
           # Hard-code user config
           git config user.email "luke@thisis.la"
@@ -25,5 +22,7 @@ jobs:
           git config --get-regexp "user\.(name|email)"
           # Update origin with token
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          # Only commit and push if we have changes
-          git commit --allow-empty -m "feat: hourly update"; git push origin main
+          # Checkout the branch so we can push back to it
+          git checkout main
+          git add .
+          git commit -m "feat: Hourly update $(date)"; git push origin main
