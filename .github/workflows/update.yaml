@@ -1,11 +1,5 @@
 name: "Update"
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "*"
-      - "!README.md"
   schedule:
     - cron: "*/2 * * * *"
 
