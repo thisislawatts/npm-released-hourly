@@ -1,4 +1,4 @@
-name: "Update"
+name: "Update and Release"
 on:
   schedule:
     - cron: "*/5 * * * *"
@@ -19,3 +19,8 @@ jobs:
           # Checkout the branch so we can push back to it
           git checkout main
           git commit --allow-empty -m "feat: Hourly update $(date)"; git push origin main
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
